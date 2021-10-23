@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">NoteApp</string>
-    <string name="writeButtonText">Write to DB</string>
+    <string name="addNoteButtonDesc">Create a new note</string>
 </resources>
