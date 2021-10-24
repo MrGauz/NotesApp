@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">NoteApp</string>
-    <string name="writeButtonText">Write to DB</string>
+    <string name="add_note_button_desc">Create a new note</string>
+    <string name="edit_dialog_title_hint">Title</string>
+    <string name="edit_dialog_text_hint">Note</string>
+    <string name="edit_dialog_save">Save</string>
+    <string name="edit_dialog_cancel">Cancel</string>
+    <string name="edit_dialog_empty_title_text">New note</string>
 </resources>
