@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class NotesViewModel : ViewModel() {
@@ -18,10 +19,13 @@ class NotesViewModel : ViewModel() {
     init {
         // Initialize LiveData with empty list
         notes.value = mutableListOf()
-        // Connect to database and create a reference to "notes" node
-        reference = Firebase
+        // Connect to database
+        val database = Firebase
             .database("https://kotlin-praktikum-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("notes")
+        // Enable disk persistence
+        database.setPersistenceEnabled(true)
+        // Create a reference to "notes" node
+        reference = database.getReference("notes")
     }
 
     fun addNote(note: Note) {
@@ -57,11 +61,9 @@ class NotesViewModel : ViewModel() {
                 // Populate a list of notes from database
                 var tmpNotesList = mutableListOf<Note>()
                 snapshot.children.forEach {
-                    if (it != null) {
-                        val note = it.getValue(Note::class.java)!!
-                            .also { note -> note.uid = it.key.toString() }
-                        tmpNotesList.add(note)
-                    }
+                    val note = it.getValue<Note>()!!
+                        .also { note -> note.uid = it.key.toString() }
+                    tmpNotesList.add(note)
                 }
 
                 // Update data in LiveData
