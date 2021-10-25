@@ -15,11 +15,13 @@ class NotesLiveData : MutableLiveData<MutableList<Note>>() {
     private var reference: DatabaseReference
 
     init {
-        // Initialize LiveData with empty list
-        // Connect to database and create a reference to "notes" node
-        reference = Firebase
+        // Connect to database
+        val database = Firebase
             .database("https://kotlin-praktikum-default-rtdb.europe-west1.firebasedatabase.app/")
-            .getReference("notes")
+        // Enable disk persistence
+        database.setPersistenceEnabled(true)
+        // Create a reference to "notes" node
+        reference = database.getReference("notes")
     }
 
     fun addNote(note: Note) {
