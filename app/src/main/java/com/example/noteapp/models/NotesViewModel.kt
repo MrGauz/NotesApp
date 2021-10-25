@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.noteapp.NotesLiveData
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -12,7 +13,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class NotesViewModel : ViewModel() {
-    private val notes = MutableLiveData<List<Note>>()
+    private val notes = NotesLiveData()
     private var reference: DatabaseReference
 
     init {
@@ -25,54 +26,19 @@ class NotesViewModel : ViewModel() {
     }
 
     fun addNote(note: Note) {
-        // Get a new unique key from database
-        val uid: String? = reference.push().key
-        if (uid != null) {
-            // Write new value to database under path /notes/$uid
-            reference.child(uid).setValue(note)
-            // We don't need to handle data or UI changes here,
-            // because once data is changes onDataChange() from getNotes() will be called
-        }
+        notes.addNote(note)
     }
 
     fun updateNote(note: Note) {
-        if (note.uid != null) {
-            // Update note under path /notes/$uid
-            reference.child(note.uid!!).updateChildren(note.toMap())
-        }
+        notes.updateNote(note)
     }
 
     fun deleteNote(note: Note) {
-        if (note.uid != null) {
-            // Delete note under path /notes/$uid
-            reference.child(note.uid!!).removeValue()
-        }
+        notes.deleteNote(note)
     }
 
-    fun getNotes(): LiveData<List<Note>> {
-        // Called once when RecyclerView is initialized, after that all changes are handled
-        // automatically by ValueEventListener
-        reference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // Populate a list of notes from database
-                var tmpNotesList = mutableListOf<Note>()
-                snapshot.children.forEach {
-                    if (it != null) {
-                        val note = it.getValue(Note::class.java)!!
-                            .also { note -> note.uid = it.key.toString() }
-                        tmpNotesList.add(note)
-                    }
-                }
+    fun getNotes(): NotesLiveData {
+        return notes.getNotes()
 
-                // Update data in LiveData
-                notes.value = tmpNotesList
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("firebase", error.message)
-            }
-        })
-
-        return notes
     }
 }
