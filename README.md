@@ -1,5 +1,5 @@
 # 📝 NotesApp
 
-Demo for a Kotlin class at TUM.
+A demo for the Kotlin practical class at TUM.
 
-The course's final project is [in this repository](https://github.com/otooooooooooooooooo/movies-app).
+The course's final project is [in this repository](https://github.com/MrGauz/movies-app).
